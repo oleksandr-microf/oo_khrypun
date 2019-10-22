@@ -1,20 +1,26 @@
 ########################################################################################################################
 #!!
-#! @description: Please note: you should be already logged in into the Salesforce system
+#! @description: This is an activity for not logged in users (Salesforce).
+#!               
+#!               Please provide data into required (*) inputs and run the activity.
 #!!#
 ########################################################################################################################
 namespace: Salesforce
 flow:
-  name: Opportunity_flow
+  name: test_opportunity_flow
   inputs:
+    - username: oleksandr.microf-upqc@force.com
+    - password
     - opportunity_name
-    - account_name
-    - close_date
-    - stage
+    - account_name: Delta
+    - close_date: 31/10/2019
+    - stage: Qualification
   workflow:
-    - Opportunity:
+    - test_opportunity:
         do:
-          Salesforce.Opportunity:
+          Salesforce.test_opportunity:
+            - usernme: '${username}'
+            - password: '${password}'
             - opportunity_name: '${opportunity_name}'
             - account_name: '${account_name}'
             - close_date: '${close_date}'
@@ -37,18 +43,23 @@ flow:
 extensions:
   graph:
     steps:
-      Opportunity:
+      test_opportunity:
         x: 100
         'y': 150
         navigate:
-          41e02008-0bf8-3349-3214-539deb59a41f:
-            targetId: b847f5a8-371d-691e-8d50-4020ef09091c
+          5154a327-ba32-db81-449b-d1a3759f8c8d:
+            targetId: 6a90a070-452a-1691-b164-3ebfe3d217b1
             port: SUCCESS
-          83ec4eab-25a5-de41-acae-b64a151cfbed:
-            targetId: b847f5a8-371d-691e-8d50-4020ef09091c
+          931ade1e-9b8f-c4b5-e1c8-7efb5dc1f3b9:
+            targetId: 6a90a070-452a-1691-b164-3ebfe3d217b1
             port: WARNING
+            vertices:
+              - x: 181
+                'y': 174
+              - x: 291.58056722349636
+                'y': 151.2513659569386
     results:
       SUCCESS:
-        b847f5a8-371d-691e-8d50-4020ef09091c:
+        6a90a070-452a-1691-b164-3ebfe3d217b1:
           x: 400
           'y': 150
