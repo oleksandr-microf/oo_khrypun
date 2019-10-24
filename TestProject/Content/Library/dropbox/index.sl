@@ -29,9 +29,10 @@ flow:
             - content_type: application/json
         publish:
           - response: '${return_result}'
+          - status_code
         navigate:
           - SUCCESS: get_folder_metadata
-          - FAILURE: on_failure
+          - FAILURE: is_true
     - get_folder_metadata:
         do:
           io.cloudslang.base.http.http_client_post:
@@ -67,9 +68,9 @@ flow:
         publish:
           - read_text
         navigate:
-          - SUCCESS: upload_file
+          - SUCCESS: create_file
           - FAILURE: on_failure
-    - upload_file:
+    - create_file:
         do:
           io.cloudslang.base.http.http_client_post:
             - url: 'https://content.dropboxapi.com/2/files/upload'
@@ -84,6 +85,13 @@ flow:
         navigate:
           - SUCCESS: delete_folder
           - FAILURE: on_failure
+    - is_true:
+        do:
+          io.cloudslang.base.utils.is_true:
+            - bool_value: '${srt(status_code == 409)}'
+        navigate:
+          - 'TRUE': SUCCESS
+          - 'FALSE': FAILURE
   results:
     - FAILURE
     - SUCCESS
@@ -92,25 +100,39 @@ extensions:
     steps:
       create_folder:
         x: 100
-        'y': 150
+        'y': 350
       get_folder_metadata:
-        x: 177
-        'y': 334
-      read_from_file:
-        x: 332
-        'y': 154
+        x: 400
+        'y': 175
       delete_folder:
-        x: 602
-        'y': 149
+        x: 915
+        'y': 528
         navigate:
-          02c8bd7c-d695-10e0-06f3-1f2497a6abad:
-            targetId: 0e2b83cf-bb24-262f-f709-fba656364452
+          bac7c1c8-040d-d7d2-3719-01f0da99c50d:
+            targetId: f88f8d75-12fc-161e-2ecf-a947aa836d16
             port: SUCCESS
-      upload_file:
-        x: 451
-        'y': 337
+      read_from_file:
+        x: 700
+        'y': 116.66666666666667
+      is_true:
+        x: 400
+        'y': 525
+        navigate:
+          94efe671-ce47-1739-7092-de40ed007d01:
+            targetId: f88f8d75-12fc-161e-2ecf-a947aa836d16
+            port: 'TRUE'
+          cd45a2d6-9fcf-c144-a56e-cb9edfec3b1d:
+            targetId: 1fae7160-ba5a-9fbb-436f-7f4a06f5e10e
+            port: 'FALSE'
+      create_file:
+        x: 1000
+        'y': 350
     results:
+      FAILURE:
+        1fae7160-ba5a-9fbb-436f-7f4a06f5e10e:
+          x: 700
+          'y': 583.3333333333334
       SUCCESS:
-        0e2b83cf-bb24-262f-f709-fba656364452:
-          x: 742
-          'y': 356
+        f88f8d75-12fc-161e-2ecf-a947aa836d16:
+          x: 700
+          'y': 350
