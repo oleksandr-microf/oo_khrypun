@@ -15,7 +15,7 @@ namespace: dropbox
 flow:
   name: index
   inputs:
-    - access_token: sl.ANWU-VfUsNWYLbI3wnv2dyxzlMeiRYmlIuBCeHm86zsrhinAs2JHk3KIfaaPwAvXDTNreAYfVFv5Cn0w0ggOS2WyOxldXgjT29lHWfIgkpwZ2w9kBpRSLJhOYdZXZOy8Q9sihSIc
+    - access_token: sl.ANWQbkp0RdLeApgxZGD4MlbbHdTF1e-bm5fahKwtkSTofFY39u5lYXqCcIUZeZ5UM-HiAj1vjFhSvMx0Xn228a0pp3Tz-WppO1NOKThpwevAlGZHpHdsr3WQRoOeLrnc2V4slq40
     - folder_name: test_folder
   workflow:
     - create_folder:
@@ -77,7 +77,7 @@ flow:
             - auth_type: anonymous
             - request_character_set: ' '
             - headers: |-
-                Authorization: Bearer sl.ANWU-VfUsNWYLbI3wnv2dyxzlMeiRYmlIuBCeHm86zsrhinAs2JHk3KIfaaPwAvXDTNreAYfVFv5Cn0w0ggOS2WyOxldXgjT29lHWfIgkpwZ2w9kBpRSLJhOYdZXZOy8Q9sihSIc
+                Authorization: Bearer sl.ANWQbkp0RdLeApgxZGD4MlbbHdTF1e-bm5fahKwtkSTofFY39u5lYXqCcIUZeZ5UM-HiAj1vjFhSvMx0Xn228a0pp3Tz-WppO1NOKThpwevAlGZHpHdsr3WQRoOeLrnc2V4slq40
                 Dropbox-API-Arg: {"path": "/test_folder/test_file.txt", "mode": "add", "autorename": true, "mute": false, "strict_conflict": false }
             - body: '${read_text}'
             - content_type: application/octet-stream
@@ -88,7 +88,7 @@ flow:
     - is_true:
         do:
           io.cloudslang.base.utils.is_true:
-            - bool_value: '${srt(status_code == 409)}'
+            - bool_value: "${str(status_code == '409')}"
         navigate:
           - 'TRUE': SUCCESS
           - 'FALSE': FAILURE
@@ -99,11 +99,11 @@ extensions:
   graph:
     steps:
       create_folder:
-        x: 100
-        'y': 350
+        x: 234
+        'y': 164
       get_folder_metadata:
-        x: 400
-        'y': 175
+        x: 415
+        'y': 157
       delete_folder:
         x: 915
         'y': 528
@@ -112,11 +112,11 @@ extensions:
             targetId: f88f8d75-12fc-161e-2ecf-a947aa836d16
             port: SUCCESS
       read_from_file:
-        x: 700
-        'y': 116.66666666666667
+        x: 652
+        'y': 157
       is_true:
-        x: 400
-        'y': 525
+        x: 263
+        'y': 433
         navigate:
           94efe671-ce47-1739-7092-de40ed007d01:
             targetId: f88f8d75-12fc-161e-2ecf-a947aa836d16
@@ -125,14 +125,14 @@ extensions:
             targetId: 1fae7160-ba5a-9fbb-436f-7f4a06f5e10e
             port: 'FALSE'
       create_file:
-        x: 1000
-        'y': 350
+        x: 917
+        'y': 257
     results:
       FAILURE:
         1fae7160-ba5a-9fbb-436f-7f4a06f5e10e:
-          x: 700
-          'y': 583.3333333333334
+          x: 505
+          'y': 496
       SUCCESS:
         f88f8d75-12fc-161e-2ecf-a947aa836d16:
-          x: 700
-          'y': 350
+          x: 521
+          'y': 312
