@@ -5,7 +5,7 @@
 #!               Please set:
 #!               * Access Token (key)
 #!               * A folder name
-#!               
+#!                
 #!               Please note: this flow will work if you don't have already created folder which equal to "folder_name"
 #!!#
 ########################################################################################################################
@@ -13,7 +13,7 @@ namespace: dropbox.folder
 flow:
   name: create
   inputs:
-    - auth_code: sl.AMcdxucFBji8T0x-t1vOxKlZgdd1JDXcsScuymKQ_nZ4kJs0tgAl1dU8jTrEQqGXWYO8_v__h4vwhzEf_ppvPkuNgfd3S2cxHJYFIl3EbVk5W18a1iAvF2M_wJuHLJ-gAr8srEO_
+    - access_token
     - folder_name: test_folder
   workflow:
     - create_folder:
@@ -22,7 +22,7 @@ flow:
             - url: 'https://api.dropboxapi.com/2/files/create_folder_v2'
             - auth_type: anonymous
             - request_character_set: utf-8
-            - headers: "${'Authorization: Bearer ' + auth_code}"
+            - headers: "${'Authorization: Bearer ' + access_token}"
             - body: "${'{\"path\": \"/' + folder_name + '\"}'}"
             - content_type: application/json
         publish:

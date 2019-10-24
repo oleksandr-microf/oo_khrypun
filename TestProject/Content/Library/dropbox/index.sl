@@ -1,13 +1,13 @@
 ########################################################################################################################
 #!!
 #! @description: This "index" flow will create a folder, check metadata and remove the folder.
-#!               
+#!                
 #!               Please set:
 #!               * Access Token (key)
 #!               * A folder name
-#!               
+#!                
 #!               To check that everything works properly, please navigate to: https://www.dropbox.com/deleted_files
-#!               
+#!                
 #!               Please note: this flow will work if you don't have already created folder which equal to "folder_name"
 #!!#
 ########################################################################################################################
@@ -15,7 +15,7 @@ namespace: dropbox
 flow:
   name: index
   inputs:
-    - auth_code: sl.AMcdxucFBji8T0x-t1vOxKlZgdd1JDXcsScuymKQ_nZ4kJs0tgAl1dU8jTrEQqGXWYO8_v__h4vwhzEf_ppvPkuNgfd3S2cxHJYFIl3EbVk5W18a1iAvF2M_wJuHLJ-gAr8srEO_
+    - access_token: sl.ANWU-VfUsNWYLbI3wnv2dyxzlMeiRYmlIuBCeHm86zsrhinAs2JHk3KIfaaPwAvXDTNreAYfVFv5Cn0w0ggOS2WyOxldXgjT29lHWfIgkpwZ2w9kBpRSLJhOYdZXZOy8Q9sihSIc
     - folder_name: test_folder
   workflow:
     - create_folder:
@@ -24,7 +24,7 @@ flow:
             - url: 'https://api.dropboxapi.com/2/files/create_folder_v2'
             - auth_type: anonymous
             - request_character_set: utf-8
-            - headers: "${'Authorization: Bearer ' + auth_code}"
+            - headers: "${'Authorization: Bearer ' + access_token}"
             - body: "${'{\"path\": \"/' + folder_name + '\"}'}"
             - content_type: application/json
         publish:
@@ -38,13 +38,13 @@ flow:
             - url: 'https://api.dropboxapi.com/2/files/get_metadata'
             - auth_type: anonymous
             - request_character_set: utf-8
-            - headers: "${'Authorization: Bearer ' + auth_code}"
+            - headers: "${'Authorization: Bearer ' + access_token}"
             - body: "${'{\"path\": \"/' + folder_name + '\"}'}"
             - content_type: application/json
         publish:
           - response: '${return_result}'
         navigate:
-          - SUCCESS: delete_folder
+          - SUCCESS: read_from_file
           - FAILURE: on_failure
     - delete_folder:
         do:
@@ -52,13 +52,37 @@ flow:
             - url: 'https://api.dropboxapi.com/2/files/delete_v2'
             - auth_type: anonymous
             - request_character_set: utf-8
-            - headers: "${'Authorization: Bearer ' + auth_code}"
+            - headers: "${'Authorization: Bearer ' + access_token}"
             - body: "${'{\"path\": \"/' + folder_name + '\"}'}"
             - content_type: application/json
         publish:
           - response: '${return_result}'
         navigate:
           - SUCCESS: SUCCESS
+          - FAILURE: on_failure
+    - read_from_file:
+        do:
+          io.cloudslang.base.filesystem.read_from_file:
+            - file_path: "C:\\file_for_test_flow.txt"
+        publish:
+          - read_text
+        navigate:
+          - SUCCESS: upload_file
+          - FAILURE: on_failure
+    - upload_file:
+        do:
+          io.cloudslang.base.http.http_client_post:
+            - url: 'https://content.dropboxapi.com/2/files/upload'
+            - auth_type: anonymous
+            - request_character_set: ' '
+            - headers: |-
+                Authorization: Bearer sl.ANWU-VfUsNWYLbI3wnv2dyxzlMeiRYmlIuBCeHm86zsrhinAs2JHk3KIfaaPwAvXDTNreAYfVFv5Cn0w0ggOS2WyOxldXgjT29lHWfIgkpwZ2w9kBpRSLJhOYdZXZOy8Q9sihSIc
+                Dropbox-API-Arg: {"path": "/test_folder/test_file.txt", "mode": "add", "autorename": true, "mute": false, "strict_conflict": false }
+            - body: '${read_text}'
+            - content_type: application/octet-stream
+        publish: []
+        navigate:
+          - SUCCESS: delete_folder
           - FAILURE: on_failure
   results:
     - FAILURE
@@ -70,17 +94,23 @@ extensions:
         x: 100
         'y': 150
       get_folder_metadata:
-        x: 400
-        'y': 150
+        x: 177
+        'y': 334
+      read_from_file:
+        x: 332
+        'y': 154
       delete_folder:
-        x: 700
-        'y': 150
+        x: 602
+        'y': 149
         navigate:
-          ff4967f7-a47a-3533-9e3f-840fa50e0bb5:
-            targetId: 0d98132e-4b27-d417-7048-f073cc6cffed
+          02c8bd7c-d695-10e0-06f3-1f2497a6abad:
+            targetId: 0e2b83cf-bb24-262f-f709-fba656364452
             port: SUCCESS
+      upload_file:
+        x: 451
+        'y': 337
     results:
       SUCCESS:
-        0d98132e-4b27-d417-7048-f073cc6cffed:
-          x: 1000
-          'y': 150
+        0e2b83cf-bb24-262f-f709-fba656364452:
+          x: 742
+          'y': 356

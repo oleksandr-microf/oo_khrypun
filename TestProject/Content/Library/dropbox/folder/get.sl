@@ -5,7 +5,7 @@
 #!               Please set:
 #!               * Access Token (key)
 #!               * A folder name
-#!               
+#!                
 #!               Please note: this flow will work if you already have created folder which equal to "folder_name"
 #!!#
 ########################################################################################################################
@@ -13,7 +13,7 @@ namespace: dropbox.folder
 flow:
   name: get
   inputs:
-    - auth_code: sl.AMcdxucFBji8T0x-t1vOxKlZgdd1JDXcsScuymKQ_nZ4kJs0tgAl1dU8jTrEQqGXWYO8_v__h4vwhzEf_ppvPkuNgfd3S2cxHJYFIl3EbVk5W18a1iAvF2M_wJuHLJ-gAr8srEO_
+    - access_token
     - folder_name: test_folder
   workflow:
     - get_folder_metadata:
@@ -22,7 +22,7 @@ flow:
             - url: 'https://api.dropboxapi.com/2/files/get_metadata'
             - auth_type: anonymous
             - request_character_set: utf-8
-            - headers: "${'Authorization: Bearer ' + auth_code}"
+            - headers: "${'Authorization: Bearer ' + access_token}"
             - body: "${'{\"path\": \"/' + folder_name + '\"}'}"
             - content_type: application/json
         publish:
@@ -47,11 +47,11 @@ extensions:
             targetId: 0b9e2083-a7f1-e3c8-979a-1cbbe409b8f5
             port: FAILURE
     results:
-      SUCCESS:
-        656290c5-e782-863a-349e-10446f829c26:
-          x: 400
-          'y': 125
       FAILURE:
         0b9e2083-a7f1-e3c8-979a-1cbbe409b8f5:
           x: 400
           'y': 375
+      SUCCESS:
+        656290c5-e782-863a-349e-10446f829c26:
+          x: 400
+          'y': 125
