@@ -15,8 +15,9 @@ namespace: dropbox
 flow:
   name: index
   inputs:
-    - access_token: sl.ANWQbkp0RdLeApgxZGD4MlbbHdTF1e-bm5fahKwtkSTofFY39u5lYXqCcIUZeZ5UM-HiAj1vjFhSvMx0Xn228a0pp3Tz-WppO1NOKThpwevAlGZHpHdsr3WQRoOeLrnc2V4slq40
+    - access_token: sl.ANUAEiDlhUIei69SuwomCuGIQBcr0Cqb4zLX4sBJ2HjL95vdVdVqatDut9vzO7Ay70VJFL3887Qd9A8fcT7YMPVo3JhGy3W1RUFbrpueU_M7iJOIvjU0booPu2yZ-bfmYW3AZX9l
     - folder_name: test_folder
+    - file_local_path: "C:\\file_for_test_flow.txt"
   workflow:
     - create_folder:
         do:
@@ -45,7 +46,7 @@ flow:
         publish:
           - response: '${return_result}'
         navigate:
-          - SUCCESS: read_from_file
+          - SUCCESS: read_file
           - FAILURE: on_failure
     - delete_folder:
         do:
@@ -61,10 +62,10 @@ flow:
         navigate:
           - SUCCESS: SUCCESS
           - FAILURE: on_failure
-    - read_from_file:
+    - read_file:
         do:
           io.cloudslang.base.filesystem.read_from_file:
-            - file_path: "C:\\file_for_test_flow.txt"
+            - file_path: '${file_local_path}'
         publish:
           - read_text
         navigate:
@@ -77,7 +78,7 @@ flow:
             - auth_type: anonymous
             - request_character_set: ' '
             - headers: |-
-                Authorization: Bearer sl.ANWQbkp0RdLeApgxZGD4MlbbHdTF1e-bm5fahKwtkSTofFY39u5lYXqCcIUZeZ5UM-HiAj1vjFhSvMx0Xn228a0pp3Tz-WppO1NOKThpwevAlGZHpHdsr3WQRoOeLrnc2V4slq40
+                Authorization: Bearer sl.ANUAEiDlhUIei69SuwomCuGIQBcr0Cqb4zLX4sBJ2HjL95vdVdVqatDut9vzO7Ay70VJFL3887Qd9A8fcT7YMPVo3JhGy3W1RUFbrpueU_M7iJOIvjU0booPu2yZ-bfmYW3AZX9l
                 Dropbox-API-Arg: {"path": "/test_folder/test_file.txt", "mode": "add", "autorename": true, "mute": false, "strict_conflict": false }
             - body: '${read_text}'
             - content_type: application/octet-stream
@@ -111,9 +112,12 @@ extensions:
           bac7c1c8-040d-d7d2-3719-01f0da99c50d:
             targetId: f88f8d75-12fc-161e-2ecf-a947aa836d16
             port: SUCCESS
-      read_from_file:
+      read_file:
         x: 652
         'y': 157
+      create_file:
+        x: 911
+        'y': 189
       is_true:
         x: 263
         'y': 433
@@ -124,9 +128,6 @@ extensions:
           cd45a2d6-9fcf-c144-a56e-cb9edfec3b1d:
             targetId: 1fae7160-ba5a-9fbb-436f-7f4a06f5e10e
             port: 'FALSE'
-      create_file:
-        x: 917
-        'y': 257
     results:
       FAILURE:
         1fae7160-ba5a-9fbb-436f-7f4a06f5e10e:
