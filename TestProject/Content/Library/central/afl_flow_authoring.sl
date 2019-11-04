@@ -47,7 +47,7 @@ flow:
         publish:
           - result_text
         navigate:
-          - SUCCESS: add_open_table_tag_into_file
+          - SUCCESS: create_html_table_in_file
     - loop_over_objects:
         do:
           io.cloudslang.base.lists.list_iterator:
@@ -114,11 +114,11 @@ flow:
         navigate:
           - SUCCESS: add_execution_id_to_file
           - FAILURE: on_failure
-    - add_open_table_tag_into_file:
+    - create_html_table_in_file:
         do:
           io.cloudslang.base.filesystem.add_text_to_file:
             - file_path: "C:\\text.txt"
-            - text: '<table>'
+            - text: '<table><tr><td>Run ID</td><td>ROI value</td></tr>'
         publish:
           - message
         navigate:
@@ -183,9 +183,9 @@ extensions:
         x: 366
         'y': 20
       get_execution_id:
-        x: 553
-        'y': 235
-      add_open_table_tag_into_file:
+        x: 609
+        'y': 318
+      create_html_table_in_file:
         x: 546
         'y': 29
       is_true_1:
@@ -199,14 +199,14 @@ extensions:
         x: 230
         'y': 197
       get_executions_summary_data:
-        x: 404
+        x: 405
         'y': 408
     results:
-      SUCCESS:
-        a2d52425-e9cb-a564-84fa-ce001aa80975:
-          x: 823
-          'y': 471
       FAILURE:
         5924f2fc-c0c8-e44e-98d6-5ed9199c47d7:
           x: 170
           'y': 479
+      SUCCESS:
+        a2d52425-e9cb-a564-84fa-ce001aa80975:
+          x: 828
+          'y': 446
