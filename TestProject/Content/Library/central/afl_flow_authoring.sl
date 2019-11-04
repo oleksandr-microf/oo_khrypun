@@ -3,6 +3,7 @@ flow:
   name: afl_flow_authoring
   inputs:
     - executions_url: 'https://alex91:8443/oo/rest/latest/executions'
+    - storage_file_path: "C:\\central_data.txt"
   workflow:
     - get_executions_data:
         do:
@@ -37,7 +38,7 @@ flow:
         publish:
           - new_string
         navigate:
-          - SUCCESS: is_true
+          - SUCCESS: is_run_id_flow
     - add_space_between_objects:
         do:
           io.cloudslang.base.strings.regex_replace:
@@ -89,12 +90,12 @@ flow:
           - status_code
           - remove_array_brackets: 'true'
         navigate:
-          - SUCCESS: is_true_1
+          - SUCCESS: is_roi_flow
           - FAILURE: on_failure
     - add_execution_id_to_file:
         do:
           io.cloudslang.base.filesystem.add_text_to_file:
-            - file_path: "C:\\central_data.txt"
+            - file_path: '${storage_file_path}'
             - text: '${"<tr><td>" + execution_id + "</td><td>" + roi_value + "</td></tr>"}'
         publish:
           - message
@@ -117,7 +118,7 @@ flow:
     - create_html_table_in_file:
         do:
           io.cloudslang.base.filesystem.add_text_to_file:
-            - file_path: "C:\\central_data.txt"
+            - file_path: '${storage_file_path}'
             - text: '<table><tr><td>Run ID</td><td>ROI value</td></tr>'
         publish:
           - message
@@ -127,21 +128,21 @@ flow:
     - add_close_table_tag_into_file:
         do:
           io.cloudslang.base.filesystem.add_text_to_file:
-            - file_path: "C:\\central_data.txt"
+            - file_path: '${storage_file_path}'
             - text: '</table>'
         publish:
           - message
         navigate:
           - SUCCESS: read_from_file
           - FAILURE: on_failure
-    - is_true:
+    - is_run_id_flow:
         do:
           io.cloudslang.base.utils.is_true:
             - bool_value: '${remove_array_brackets}'
         navigate:
           - 'TRUE': get_roi_value
           - 'FALSE': add_space_between_objects
-    - is_true_1:
+    - is_roi_flow:
         do:
           io.cloudslang.base.utils.is_true:
             - bool_value: '${remove_array_brackets}'
@@ -163,7 +164,7 @@ flow:
     - read_from_file:
         do:
           io.cloudslang.base.filesystem.read_from_file:
-            - file_path: "C:\\central_data.txt"
+            - file_path: '${storage_file_path}'
         publish:
           - data_table: '${read_text}'
           - message
@@ -180,11 +181,8 @@ extensions:
         x: 835
         'y': 23
       add_execution_id_to_file:
-        x: 396
+        x: 397
         'y': 193
-      is_true:
-        x: 239
-        'y': 21
       loop_over_objects:
         x: 697
         'y': 135
@@ -203,6 +201,9 @@ extensions:
       read_from_file:
         x: 1005
         'y': 156
+      is_run_id_flow:
+        x: 239
+        'y': 21
       get_execution_id:
         x: 609
         'y': 318
@@ -216,16 +217,16 @@ extensions:
       create_html_table_in_file:
         x: 546
         'y': 29
-      is_true_1:
+      get_roi_value:
+        x: 230
+        'y': 197
+      is_roi_flow:
         x: 280
         'y': 358
         navigate:
           f41638da-f685-dfa6-7174-bf21ace7be65:
             targetId: 5924f2fc-c0c8-e44e-98d6-5ed9199c47d7
             port: 'FALSE'
-      get_roi_value:
-        x: 230
-        'y': 197
       get_executions_summary_data:
         x: 405
         'y': 408
