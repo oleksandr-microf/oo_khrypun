@@ -94,7 +94,7 @@ flow:
     - add_execution_id_to_file:
         do:
           io.cloudslang.base.filesystem.add_text_to_file:
-            - file_path: "C:\\text.txt"
+            - file_path: "C:\\central_data.txt"
             - text: '${"<tr><td>" + execution_id + "</td><td>" + roi_value + "</td></tr>"}'
         publish:
           - message
@@ -117,7 +117,7 @@ flow:
     - create_html_table_in_file:
         do:
           io.cloudslang.base.filesystem.add_text_to_file:
-            - file_path: "C:\\text.txt"
+            - file_path: "C:\\central_data.txt"
             - text: '<table><tr><td>Run ID</td><td>ROI value</td></tr>'
         publish:
           - message
@@ -127,12 +127,12 @@ flow:
     - add_close_table_tag_into_file:
         do:
           io.cloudslang.base.filesystem.add_text_to_file:
-            - file_path: "C:\\text.txt"
+            - file_path: "C:\\central_data.txt"
             - text: '</table>'
         publish:
           - message
         navigate:
-          - SUCCESS: SUCCESS
+          - SUCCESS: read_from_file
           - FAILURE: on_failure
     - is_true:
         do:
@@ -148,6 +148,28 @@ flow:
         navigate:
           - 'TRUE': remove_left_array_bracket
           - 'FALSE': FAILURE
+    - send_mail:
+        do:
+          io.cloudslang.base.mail.send_mail:
+            - hostname: 127.0.0.1
+            - port: '25'
+            - from: oleksandr.test@gmail.com
+            - to: oleksandr.microf@gmail.com
+            - subject: Central data table
+            - body: '${data_table}'
+        navigate:
+          - SUCCESS: SUCCESS
+          - FAILURE: on_failure
+    - read_from_file:
+        do:
+          io.cloudslang.base.filesystem.read_from_file:
+            - file_path: "C:\\central_data.txt"
+        publish:
+          - data_table: '${read_text}'
+          - message
+        navigate:
+          - SUCCESS: send_mail
+          - FAILURE: on_failure
   results:
     - FAILURE
     - SUCCESS
@@ -157,10 +179,6 @@ extensions:
       add_close_table_tag_into_file:
         x: 835
         'y': 23
-        navigate:
-          8403658f-2bc3-710e-ea8c-8a9a6a93ec74:
-            targetId: a2d52425-e9cb-a564-84fa-ce001aa80975
-            port: SUCCESS
       add_execution_id_to_file:
         x: 396
         'y': 193
@@ -182,9 +200,19 @@ extensions:
       add_space_between_objects:
         x: 366
         'y': 20
+      read_from_file:
+        x: 1005
+        'y': 156
       get_execution_id:
         x: 609
         'y': 318
+      send_mail:
+        x: 1004
+        'y': 319
+        navigate:
+          fcb1a0a1-847b-b87b-02f8-aef34b957cd5:
+            targetId: a2d52425-e9cb-a564-84fa-ce001aa80975
+            port: SUCCESS
       create_html_table_in_file:
         x: 546
         'y': 29
