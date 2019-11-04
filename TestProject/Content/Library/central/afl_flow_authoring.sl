@@ -5,6 +5,7 @@
 #!                
 #!               Notes:
 #!               * you should run SMTP server for current flow to send an email with created table
+#!               * used additional steps (remove array brackets ([]) and add space between objects) because RPA listing works with json as with a string
 #!!#
 ########################################################################################################################
 namespace: central
