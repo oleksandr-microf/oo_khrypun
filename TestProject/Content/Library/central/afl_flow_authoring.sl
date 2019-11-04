@@ -47,7 +47,7 @@ flow:
         publish:
           - new_string
         navigate:
-          - SUCCESS: is_run_id_flow
+          - SUCCESS: add_space_between_objects
     - add_space_between_objects:
         do:
           io.cloudslang.base.strings.regex_replace:
@@ -83,23 +83,7 @@ flow:
           - error_message
           - return_result
         navigate:
-          - SUCCESS: get_executions_summary_data
-          - FAILURE: on_failure
-    - get_executions_summary_data:
-        do:
-          io.cloudslang.base.http.http_client_get:
-            - url: "${'https://alex91:8443/oo/rest/latest/executions/' + execution_id + '/summary'}"
-            - auth_type: anonymous
-            - trust_all_roots: 'true'
-            - content_type: application/json
-        publish:
-          - return_result
-          - error_message
-          - return_code
-          - status_code
-          - remove_array_brackets: 'true'
-        navigate:
-          - SUCCESS: is_roi_flow
+          - SUCCESS: get_roi_value
           - FAILURE: on_failure
     - add_execution_id_to_file:
         do:
@@ -144,20 +128,6 @@ flow:
         navigate:
           - SUCCESS: read_from_file
           - FAILURE: on_failure
-    - is_run_id_flow:
-        do:
-          io.cloudslang.base.utils.is_true:
-            - bool_value: '${remove_array_brackets}'
-        navigate:
-          - 'TRUE': get_roi_value
-          - 'FALSE': add_space_between_objects
-    - is_roi_flow:
-        do:
-          io.cloudslang.base.utils.is_true:
-            - bool_value: '${remove_array_brackets}'
-        navigate:
-          - 'TRUE': remove_left_array_bracket
-          - 'FALSE': FAILURE
     - send_mail:
         do:
           io.cloudslang.base.mail.send_mail:
@@ -181,20 +151,20 @@ flow:
           - SUCCESS: send_mail
           - FAILURE: on_failure
   results:
-    - FAILURE
     - SUCCESS
+    - FAILURE
 extensions:
   graph:
     steps:
       add_close_table_tag_into_file:
-        x: 835
-        'y': 23
+        x: 527
+        'y': 95
       add_execution_id_to_file:
-        x: 397
-        'y': 193
+        x: 196
+        'y': 301
       loop_over_objects:
-        x: 697
-        'y': 135
+        x: 400
+        'y': 305
       remove_right_array_bracket:
         x: 52
         'y': 82
@@ -205,46 +175,29 @@ extensions:
         x: 62
         'y': 456
       add_space_between_objects:
-        x: 366
-        'y': 20
+        x: 208
+        'y': 90
       read_from_file:
-        x: 1005
-        'y': 156
-      is_run_id_flow:
-        x: 239
-        'y': 21
+        x: 696
+        'y': 102
       get_execution_id:
-        x: 609
-        'y': 318
+        x: 391
+        'y': 507
       send_mail:
-        x: 1004
-        'y': 319
+        x: 691
+        'y': 297
         navigate:
           fcb1a0a1-847b-b87b-02f8-aef34b957cd5:
             targetId: a2d52425-e9cb-a564-84fa-ce001aa80975
             port: SUCCESS
       create_html_table_in_file:
-        x: 546
-        'y': 29
+        x: 385
+        'y': 89
       get_roi_value:
-        x: 230
-        'y': 197
-      is_roi_flow:
-        x: 280
-        'y': 358
-        navigate:
-          f41638da-f685-dfa6-7174-bf21ace7be65:
-            targetId: 5924f2fc-c0c8-e44e-98d6-5ed9199c47d7
-            port: 'FALSE'
-      get_executions_summary_data:
-        x: 405
-        'y': 408
+        x: 198
+        'y': 511
     results:
-      FAILURE:
-        5924f2fc-c0c8-e44e-98d6-5ed9199c47d7:
-          x: 170
-          'y': 479
       SUCCESS:
         a2d52425-e9cb-a564-84fa-ce001aa80975:
-          x: 828
-          'y': 446
+          x: 685
+          'y': 512
