@@ -15,7 +15,7 @@ namespace: dropbox
 flow:
   name: index
   inputs:
-    - access_token: sl.ANUAEiDlhUIei69SuwomCuGIQBcr0Cqb4zLX4sBJ2HjL95vdVdVqatDut9vzO7Ay70VJFL3887Qd9A8fcT7YMPVo3JhGy3W1RUFbrpueU_M7iJOIvjU0booPu2yZ-bfmYW3AZX9l
+    - access_token: sl.AOCuAW4ZKjylcKIHaJQ89IOE6j66Kvr6-1soT3TDK4g63hx1-TPja91OOggkeSHFW1PQG-JyTe8aftN5ZhJG8_XtaF2X8yDROx46gtgYixtp7NkO0D3gq8vBin13GFOL1J_77fL4
     - folder_name: test_folder
     - file_local_path: "C:\\file_for_test_flow.txt"
   workflow:
@@ -32,36 +32,8 @@ flow:
           - response: '${return_result}'
           - status_code
         navigate:
-          - SUCCESS: get_folder_metadata
+          - SUCCESS: get
           - FAILURE: is_true
-    - get_folder_metadata:
-        do:
-          io.cloudslang.base.http.http_client_post:
-            - url: 'https://api.dropboxapi.com/2/files/get_metadata'
-            - auth_type: anonymous
-            - request_character_set: utf-8
-            - headers: "${'Authorization: Bearer ' + access_token}"
-            - body: "${'{\"path\": \"/' + folder_name + '\"}'}"
-            - content_type: application/json
-        publish:
-          - response: '${return_result}'
-        navigate:
-          - SUCCESS: read_file
-          - FAILURE: on_failure
-    - delete_folder:
-        do:
-          io.cloudslang.base.http.http_client_post:
-            - url: 'https://api.dropboxapi.com/2/files/delete_v2'
-            - auth_type: anonymous
-            - request_character_set: utf-8
-            - headers: "${'Authorization: Bearer ' + access_token}"
-            - body: "${'{\"path\": \"/' + folder_name + '\"}'}"
-            - content_type: application/json
-        publish:
-          - response: '${return_result}'
-        navigate:
-          - SUCCESS: SUCCESS
-          - FAILURE: on_failure
     - read_file:
         do:
           io.cloudslang.base.filesystem.read_from_file:
@@ -78,13 +50,13 @@ flow:
             - auth_type: anonymous
             - request_character_set: ' '
             - headers: |-
-                Authorization: Bearer sl.ANUAEiDlhUIei69SuwomCuGIQBcr0Cqb4zLX4sBJ2HjL95vdVdVqatDut9vzO7Ay70VJFL3887Qd9A8fcT7YMPVo3JhGy3W1RUFbrpueU_M7iJOIvjU0booPu2yZ-bfmYW3AZX9l
+                Authorization: Bearer sl.AOCuAW4ZKjylcKIHaJQ89IOE6j66Kvr6-1soT3TDK4g63hx1-TPja91OOggkeSHFW1PQG-JyTe8aftN5ZhJG8_XtaF2X8yDROx46gtgYixtp7NkO0D3gq8vBin13GFOL1J_77fL4
                 Dropbox-API-Arg: {"path": "/test_folder/test_file.txt", "mode": "add", "autorename": true, "mute": false, "strict_conflict": false }
             - body: '${read_text}'
             - content_type: application/octet-stream
         publish: []
         navigate:
-          - SUCCESS: delete_folder
+          - SUCCESS: delete
           - FAILURE: on_failure
     - is_true:
         do:
@@ -93,6 +65,20 @@ flow:
         navigate:
           - 'TRUE': SUCCESS
           - 'FALSE': FAILURE
+    - delete:
+        do:
+          dropbox.folder.delete:
+            - access_token: '${access_token}'
+        navigate:
+          - FAILURE: on_failure
+          - SUCCESS: SUCCESS
+    - get:
+        do:
+          dropbox.folder.get:
+            - access_token: '${access_token}'
+        navigate:
+          - FAILURE: on_failure
+          - SUCCESS: read_file
   results:
     - FAILURE
     - SUCCESS
@@ -102,21 +88,21 @@ extensions:
       create_folder:
         x: 234
         'y': 164
-      get_folder_metadata:
-        x: 415
-        'y': 157
-      delete_folder:
-        x: 915
-        'y': 528
+      get:
+        x: 422
+        'y': 156
+      delete:
+        x: 921
+        'y': 507
         navigate:
-          bac7c1c8-040d-d7d2-3719-01f0da99c50d:
+          9cf4c714-702d-96ab-7717-a1aa5fc4c99b:
             targetId: f88f8d75-12fc-161e-2ecf-a947aa836d16
             port: SUCCESS
       read_file:
         x: 652
         'y': 157
       create_file:
-        x: 911
+        x: 912
         'y': 189
       is_true:
         x: 263
