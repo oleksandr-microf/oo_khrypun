@@ -1,3 +1,12 @@
+########################################################################################################################
+#!!
+#! @description: executions_url - the flow will make a request to Central RPA using this URL to get data for all executions
+#!               storage_file_path- the place on your computer where you store a file for creating and saving there table with Run IDs and ROI values
+#!                
+#!               Notes:
+#!               * you should run SMTP server for current flow to send an email with created table
+#!!#
+########################################################################################################################
 namespace: central
 flow:
   name: afl_flow_authoring
