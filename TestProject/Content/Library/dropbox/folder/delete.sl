@@ -1,6 +1,6 @@
 ########################################################################################################################
 #!!
-#! @description: Delete the Dropbox folder metadata.
+#! @description: Delete a folder from Dropbox.
 #!                
 #!               Please set:
 #!               * Access Token (key)
@@ -11,15 +11,15 @@
 ########################################################################################################################
 namespace: dropbox.folder
 flow:
-  name: get
+  name: delete
   inputs:
     - access_token
     - folder_name: test_folder
   workflow:
-    - get_folder_metadata:
+    - delete_folder:
         do:
           io.cloudslang.base.http.http_client_post:
-            - url: 'https://api.dropboxapi.com/2/files/get_metadata'
+            - url: 'https://api.dropboxapi.com/2/files/delete_v2'
             - auth_type: anonymous
             - request_character_set: utf-8
             - headers: "${'Authorization: Bearer ' + access_token}"
@@ -36,22 +36,22 @@ flow:
 extensions:
   graph:
     steps:
-      get_folder_metadata:
+      delete_folder:
         x: 100
         'y': 250
         navigate:
-          e977d2cd-51ef-8ea4-a55a-eb53be1e3e96:
-            targetId: 656290c5-e782-863a-349e-10446f829c26
+          4ec0fcae-7230-6802-47c4-996ac6c2fd8e:
+            targetId: c1803e4d-a357-6c6f-e658-95d267579ea1
             port: SUCCESS
-          18dc8cf2-386f-2130-d641-a80681a55d2e:
-            targetId: 0b9e2083-a7f1-e3c8-979a-1cbbe409b8f5
+          1c6e92d9-79f8-82ee-5fba-fb1f94ff2baa:
+            targetId: d8ffb972-88b7-5442-3e88-07ad2a787432
             port: FAILURE
     results:
       FAILURE:
-        0b9e2083-a7f1-e3c8-979a-1cbbe409b8f5:
+        d8ffb972-88b7-5442-3e88-07ad2a787432:
           x: 400
           'y': 375
       SUCCESS:
-        656290c5-e782-863a-349e-10446f829c26:
+        c1803e4d-a357-6c6f-e658-95d267579ea1:
           x: 400
           'y': 125
